@@ -1,0 +1,101 @@
+body {
+    font-family: Open Sans, Lucida Sans;
+    color: darkblue
+}
+
+header{
+    padding: 20px 62px;
+    padding-bottom: 0;
+    background-color: rgb(255, 208, 0);
+
+    display: grid;
+    grid-template-rows: 1fr 1fr ;
+    grid-template-columns: 0.5fr 3fr 1fr 1fr 2fr;
+    grid-template-areas: 
+    "none leilum list list log"
+    "none signed list list log"  ;
+    row-gap: 10px;
+}
+
+header h1 {
+    margin: 0
+}
+
+header small {
+    font-size: 14px;
+    margin-top: 39px;
+
+}
+header small,
+header h1{
+    grid-area: leilum;
+}
+
+header #status-container{
+    grid-area: signed;
+    margin-top: 7px
+}
+header .nav{
+    grid-area: list
+}
+header .log{
+    grid-area: log;
+    list-style: none;
+
+}
+
+
+body h2 {
+    padding: 30px 127px
+}
+
+body .auctionContainer{
+    border: 1px solid gray;
+    padding: 10px;
+    margin: 10px 127px;
+    height: 300px;
+    transition: 0.2s;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+    "img n"
+    "img title"
+    "img price"
+    "img info"
+    "img noen"
+    ;
+}
+body .auctionContainer #image-container{
+    grid-area: img;
+    text-align: center;
+    place-self: center;
+    margin: 10px 0;
+}
+body .auctionContainer #image-container img{
+    max-height: 260px;
+    max-width: 325px;
+}
+
+body .auctionContainer #title{
+    grid-area: title;
+    font-size: 30px;
+    color: darkblue;
+    margin-top: auto;
+}
+body .auctionContainer #price{
+    grid-area: price;
+    margin-top: inherit;
+    font-size: 20px;
+
+}
+body .auctionContainer #info{
+    grid-area: info;
+}
+
+body .auctionContainer:hover{
+    border: 5px solid lightblue;
+    text-decoration: none;
+}
+
+
+

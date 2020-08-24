@@ -1,0 +1,24 @@
+Total: 6,5/7
+
+todo:
+    -in index, price do not appear
+    -when place bid, page do not reload
+
+Models: Done!!  
+
+Create Listing: Done!! 
+
+Active Listings Page: working, but Buggy -> do not display the bid
+
+Listing Page: total -> 3/5
+1- Working!!
+2- Working, but buggy! -> when displaying the page again, is does not reload
+3- Working!
+4- Working!, but features should be good -> when login, display that won the bid
+5- Working!!
+
+Watchlist: working!!
+
+Categories: working!!
+
+Django Admin Interface: working!! think so

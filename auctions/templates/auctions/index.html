@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ title }}</h2>
+
+    {% for auc in auctions %}
+        <a href="{% url 'listing' auc.id %}" class="auctionContainer">
+            <div id="image-container">
+                <img src="{{ auc.imgUrl }}" alt="Image">
+            </div>
+            <p id="title">{{ auc.title }}</p>
+            <p id="price"><strong>Price:</strong> {{ auc.bids }}</p>
+            <p id="info">{{ auc.info }}</p>
+        </a>
+    {% empty %}
+    <div class="containerList">
+        No auctions...
+    </div>
+    {% endfor %}
+    
+{% endblock %}

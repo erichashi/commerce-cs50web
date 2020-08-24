@@ -1,0 +1,92 @@
+
+body .containerList{
+    margin: 0 127px 50px;
+}
+body #title-container h2{
+    margin: 0;
+    padding: 0
+}
+body #title-container{
+    margin: 30px 127px 10px;
+    display: flex;
+    place-content: space-between;
+}
+
+body #title-container a{
+    height: 35px;
+    width: 75px;
+    font-size: large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+body #title-container .btn-warning{
+    width: auto;
+    padding: 5px;
+    color: white;
+}
+
+
+body .containerList .img-container{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+body .containerList div{
+    padding: 10px    
+}
+
+body .containerList label{
+    margin-top: 15px;
+    display: block;
+}
+
+body .containerList .bid-container p{
+    color: red;
+}
+
+
+body .containerList .comments-container{
+    margin-top: 7px;
+
+}
+body .containerList .comments-container .single-comment{
+    padding: 7px;
+    border: 1px solid blue
+}
+
+body .containerList .comments-container input{
+    display: block;
+    width: 100%;
+    height: 90px;
+}
+body .containerList .comments-container form div{
+    display: flex;
+
+    padding: 8px 0;
+    justify-content: flex-end;
+    
+}
+
+body .containerList .comments-container .btn-primary{
+    height: auto;
+    width: auto;
+
+}
+
+.create-container h2{
+    padding-bottom: 0;
+}
+.create-container form div{
+    padding: 0;
+}
+.create-container form .form-group input,
+.create-container form .form-group select
+{
+    margin-left: 5px;
+}
+
+
+
+

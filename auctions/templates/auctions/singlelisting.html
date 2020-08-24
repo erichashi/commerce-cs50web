@@ -1,0 +1,110 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if listing.isActive %}
+        <div id="title-container">
+            <h2>Listing: {{ listing.title }}</h2>
+
+            {% if user.is_authenticated %}
+                {% if listing.owner == user %}
+                    <a class= "btn-danger" href="{% url 'close' listing.id  %}">Close</a>
+                {% else  %}
+                    <a class= "btn-warning" href="{% url 'dealwatch' listing.id  %}">{{ addOrRemove }} Watchlist</a>
+                {% endif %}
+            {% endif %}
+            <input type="hidden" placeholder="{{ addOrRemove }}">
+        </div>         
+    {% else %}
+        <h2 style="color: red;">Closed: {{ listing.title }}</h2>
+    {% endif %}
+    
+
+<div class="containerList">
+
+    <div class="img-container">
+        <img src="{{ listing.imgUrl }}" alt="Image" height="300px">
+    </div>
+    
+    <div class="bid-container">
+
+    {% if listing.isActive %}
+        <h3>${{ higuestBid.price }}</h3>
+        <small>{{ lenBids }} bid(s) so far. 
+            
+            
+            {% if higuestBid.owner == user %}
+                Your bid 
+            {% else %}
+                {{ higuestBid.owner }} bid
+            {% endif %}
+            is the current bid.</small>
+        <!-- <ul>
+            {% for bid in bids %}
+            <li>
+                ${{ bid.price }}
+            </li>
+            {% endfor %}
+        </ul> -->
+
+        {% if listing.owner != user %}        
+            <form action="{% url 'listing' listing.id %}" method="POST">
+                {% csrf_token %}
+                {{ placeBid }}
+                <input type="submit" class="btn-primary" name="submitBid" value="Place bid">
+                <p>    
+                    {% if message %}
+                        {{ message }}
+                    {% endif %}
+                </p>
+
+            </form>
+        {% endif %}
+
+    {% else %}
+        <h4 style="color: red;">${{ higuestBid.price }}</h4>
+            {% if higuestBid.owner == user %}
+                Congratulations! You won the bid!
+            {% else %}
+                {{ higuestBid.owner }} won the bid!
+            {% endif %}
+    {% endif %}
+    </div>
+
+    <div class="details-container">
+
+    <h4>Details</h4>
+    <ul>
+        <li>Listed by: {{ listing.owner }}</li>
+        <li>Category: {{ listing.category }}</li>
+        <li>Owner's comments: {{ listing.info }}</li>
+    </ul>
+
+    </div>
+
+
+    <div class="comments-container">
+
+    <h4>Comments</h4>
+    {% for comment in comments %}
+    <div class="single-comment">
+        {{comment.owner }}: {{comment.content}}
+    </div>
+    {% endfor %}
+
+    {% if listing.isActive %}
+    <form action="{% url 'listing' listing.id %}" method="POST">
+
+        {% csrf_token %}
+        {{ placeComment }}
+        <div>
+            <input class="btn-primary" type="submit" name="submitComment" value="Submit">
+        </div>
+    </form>
+    {% endif %}
+    </div>
+    
+        
+</div>    
+    
+
+{% endblock %}
