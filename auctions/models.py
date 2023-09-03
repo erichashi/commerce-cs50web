@@ -7,11 +7,6 @@ class User(AbstractUser):
         return f"{self.username}"
     
 
-
-
-#what is better: a bid to have an auction or an aunction to have a bid?
-#test1: an auction have a bid
-
 #a bid have a price, owner
 class Bid(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -34,7 +29,7 @@ CATEGORIES_CHOICES = (
     ('Music Instruments','MUSIC INTRUMENTS'),
 )
 
-#an auction have a title, small information, imageurl, category, list of bids, owner, comments, boolean to check if is active
+#an auction have a title, small information, imageurl, category, list of bids, owner, comments, boolean to check if is active, list of users to watchlist
 class AuctionListing(models.Model):
     title = models.CharField(max_length=30)
     info = models.CharField(max_length=100)
@@ -45,10 +40,13 @@ class AuctionListing(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     bids = models.ManyToManyField(Bid, blank=True, related_name="bids")    
+    higuestbid = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
     comments = models.ManyToManyField(Comment, blank=True, related_name="comments")
 
     isActive = models.BooleanField()
 
     isWatchOfThoseUsers = models.ManyToManyField(User, blank=True, related_name="usersWatch")
     
+
 

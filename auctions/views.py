@@ -1,11 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
+from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django import forms
-from django.template import loader
+
 from django.db.models import Max
 
 #super user: eric, pass: eric123
@@ -34,9 +33,6 @@ def valueIsGreaterThanOtherBids(value, listing_id):
 def getLenBids(bids):
     return len(bids)
 
-
-
-
 def isInWatch(listing_id, user):
     # try:
     userList = AuctionListing.objects.get(id=listing_id).isWatchOfThoseUsers.all()
@@ -45,7 +41,6 @@ def isInWatch(listing_id, user):
         return True
         
     return False
-
 
 def addOrRemove(single_id, user):
     try:
@@ -56,13 +51,32 @@ def addOrRemove(single_id, user):
     except User.DoesNotExist:
         return ""
 
+def initializeMaxBid(objects):
+    listings = []
+    for l in objects:
+        bid = getHiguestBid(l.bids.all())
+        l.higuestbid = bid.price
+        listings.append(l)
+    return listings
+
+def initializeListingInfo(single, listing_id, user):
+    c = {
+        "listing": single,
+        "comments": single.comments.all(),
+        "bids": single.bids.all(),
+        "higuestBid": getHiguestBid(single.bids.all()),
+        "lenBids": getLenBids(single.bids.all()),
+        "addOrRemove": addOrRemove(listing_id, user), 
+        "placeComment": placeComment(prefix='comment'),
+        "placeBid": placeBid(prefix='bid'),
+    }
+    return c
+
 #index
 def index(request):
-    AuctionListing.objects.all().aggregate(Max('bids'))
     return render(request, "auctions/index.html", {
-        "auctions": AuctionListing.objects.filter(isActive__exact=True),
+        "auctions": initializeMaxBid(AuctionListing.objects.filter(isActive= True)),
         "title": "Auction Listing"
-
     })
 
 #Given functions: 
@@ -125,16 +139,7 @@ def listing(request, listing_id):
 
     try:
         single = AuctionListing.objects.get(id=listing_id)
-        c = {
-            "listing": single,
-            "comments": single.comments.all(),
-            "bids": single.bids.all(),
-            "higuestBid": getHiguestBid(single.bids.all()),
-            "lenBids": getLenBids(single.bids.all()),
-            "addOrRemove": addOrRemove(listing_id, request.user), 
-            "placeComment": placeComment(prefix='comment'),
-            "placeBid": placeBid(prefix='bid'),
-        }
+        c = initializeListingInfo(single, listing_id, request.user)
         t = 'auctions/singlelisting.html'
 
     except AuctionListing.DoesNotExist:
@@ -154,11 +159,15 @@ def listing(request, listing_id):
 
                     listing = AuctionListing.objects.get(id=listing_id)
                     listing.bids.add(bid)
+                    #when adding bid, page do not reload
+                    cb = initializeListingInfo(listing, listing_id
+                    , request.user)
 
-                    return render(request, t, c)
+                    return render(request, t, cb)
                 else:
                     c["message"] = 'Bid must be greater than other bids'
                     return render(request, t, c)
+
             else:
                 c['placeBid'] = placeBidForm
                 return render(request, t, c)
@@ -189,7 +198,7 @@ def listing(request, listing_id):
 
 
 categories = [
-    'Tecnology', 'Automotive', 'Toys', 'Sports', 'Fashion', 'Music Instruments' 'Books', 'Pet Shop', 'Watches', 'Antique'
+    'Technology', 'Automotive', 'Toys', 'Sports', 'Fashion', 'Music Instruments', 'Books', 'Pet Shop', 'Watches', 'Antique'
 ]
 
 @login_required
@@ -221,25 +230,19 @@ def create(request):
             "categories": categories
         })
 
-#we need to consider that a USER have a list, not AN aunction
-#can we have in a listing a list of users??
-
-
-
 
 @login_required
 def dealwatch(request, listing_id):
-    print('add to watch')
 
     listing = AuctionListing.objects.get(id=listing_id)
     
     if not isInWatch(listing_id, request.user):
         #add to wacth
-        print('tryng to add ')
+
         listing.isWatchOfThoseUsers.add(request.user)
     else:
         #remove from watch
-        print('tryng to remove') 
+
         listing.isWatchOfThoseUsers.remove(request.user)
         listing.save()
     
@@ -248,7 +251,7 @@ def dealwatch(request, listing_id):
 
 def watchlist(request):
     return render(request, "auctions/index.html", {
-        "auctions": AuctionListing.objects.filter(isWatchOfThoseUsers__in =[request.user], isActive=True),
+        "auctions": initializeMaxBid(AuctionListing.objects.filter(isWatchOfThoseUsers__in =[request.user], isActive=True)),
         "title": "Watchlist"
     })
 
@@ -263,7 +266,7 @@ def category(request):
 
 def filter(request, category):
     return render(request, "auctions/index.html", {
-        "auctions": AuctionListing.objects.filter(category__exact=category),    
+        "auctions": initializeMaxBid(AuctionListing.objects.filter(category__exact=category)),    
         "title": "Auction Listing: "+category 
     })
 
